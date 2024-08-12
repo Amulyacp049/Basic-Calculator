@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Basic Calculator</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+    <div class="toggleBtn"></div>
+    <div class="calculator">
+        <div class="buttons">
+            <h2 id="value"></h2>
+            <span id="clear">Clear</span>
+            <span>/</span>
+            <span>*</span>
+            <span>7</span>
+            <span>8</span>
+            <span>9</span>
+            <span id="minus">-</span>
+            <span>4</span>
+            <span>5</span>
+            <span>6</span>
+            <span id="plus">+</span>
+            <span>1</span>
+            <span>2</span>
+            <span>3</span>
+            <span>0</span>
+            <span>00</span>
+            <span>.</span>
+            <span id="equal">=</span>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const display = document.getElementById('value');
+            const buttons = document.querySelectorAll('.buttons span');
+            const toggleBtn = document.querySelector('.toggleBtn');
+            const body = document.querySelector('body');
+
+            buttons.forEach(button => {
+                button.addEventListener("click", function () {
+                    if (this.innerHTML == "=") {
+                        calculateResult();
+                    } else if (this.innerHTML == "Clear") {
+                        clearDisplay();
+                    } else {
+                        addToDisplay(this.innerHTML);
+                    }
+                });
+            });
+
+            toggleBtn.onclick = function () {
+                body.classList.toggle('dark');
+            }
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key >= 0 && e.key <= 9 || e.key === '.') {
+                    addToDisplay(e.key);
+                } else if (['+', '-', '*', '/'].includes(e.key)) {
+                    addToDisplay(e.key);
+                } else if (e.key === 'Enter') {
+                    e.preventDefault();
+                    calculateResult();
+                } else if (e.key === 'Backspace') {
+                    deleteLastChar();
+                } else if (e.key === 'Escape') {
+                    clearDisplay();
+                }
+            });
+
+            function calculate(str) {
+                return Function('"use strict";return (' + str + ')')();
+            }
+
+            function addToDisplay(key) {
+                display.innerHTML += key;
+            }
+
+            function calculateResult() {
+                try {
+                    let result = calculate(display.innerHTML);
+                    display.innerHTML = result;
+                } catch (e) {
+                    display.innerHTML = "Error";
+                }
+            }
+
+            function deleteLastChar() {
+                display.innerHTML = display.innerHTML.slice(0, -1);
+            }
+
+            function clearDisplay() {
+                display.innerHTML = "";
+            }
+        });
+    </script>
+</body>
+</html>
